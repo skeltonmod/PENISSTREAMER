@@ -55,9 +55,15 @@ class Stream extends React.Component{
     this.setState({renderedTitleList: this.state.titleList.slice(this.state.page_count, this.state.page_count + this.state.limit)})
   }
 
-  async playEpisode(){
-    
-  }
+  // async playEpisode(){
+  //   const request = await doCORSRequest({url:`http://localhost:8080/https://www.wcostream.com/inc/embed/getvidlink.php?v=Cartoons/SpongeBob.SquarePants.S13E01E02.1080p.AMZN.WEBRip.DDP2.0.x264-LAZY[rarbg]/SpongeBob.SquarePants.S13E01E02.A.Place.for.Pets.-.Lockdown.for.Love.1080p.AMZN.WEB-DL.DDP2.0.H.264-LAZY.mp4&embed=ndisk&hd=1`
+  //     , method: "GET"}).then((r)=>{return r.data})
+  //
+  //   console.log(request)
+  //
+  //   let $ = cheerio.load(request)
+  //
+  // }
 
   async parseEpisode(e){
     // crawl for episode
@@ -68,7 +74,7 @@ class Stream extends React.Component{
     const request = await doCORSRequest({url:`https://www.wcostream.com/${e.target.name}`, method: "GET"}).
     then((r)=>{return r.data})
 
-    console.log(request)
+    // console.log(request)
 
     let $ = cheerio.load(request)
     $('script').each((i, link)=>{
@@ -76,18 +82,22 @@ class Stream extends React.Component{
 
         // Decode crappy indonesian encryption
         arrayBin = String(String(link.children[0].data).match('(?<=\\[).+?(?=\\])')[0]).split(', ')
-        arrayKey = String(link.children[0].data).match('\\d+\\d+\\d+\\d+\\d+\\d+\\d+\\d+')
+        arrayKey = String(link.children[0].data).match('\\d+\\d+\\d+\\d+')
       }
     })
 
     arrayBin.forEach(function (value) {
+      // console.log(value)
       URI += String.fromCharCode(parseInt(atob(String(value).replace(/['"]+/g,'')).replace(/\D/g,'')) - parseInt(arrayKey));
 
     });
 
+    console.log(URI)
+
     $ = cheerio.load(URI)
 
     await this.setState({episode_link: $('iframe')[0].attribs.src});
+
   }
 
   render() {
@@ -105,11 +115,23 @@ class Stream extends React.Component{
       <div className="row">
         <div className="col">
           <div className="jumbotron my-6">
-            <p className="lead">
-              {this.state.source ? <video width="100%" height="300" controls>
-                <source src={this.state.source} type="video/mp4"/>
-              </video> : <center>{this.state.episode_link ? this.state.episode_link : "No Video Loaded"}</center>}
-            </p>
+            {/*{this.state.source ? <video width="100%" height="300" controls>*/}
+            {/*  <source src={this.state.source} type="video/mp4"/>*/}
+            {/*</video> : <center>{this.state.episode_link ? "Loading" : "No Video Loaded"}</center>}*/}
+            {/*{this.state.episode_link ? <iframe*/}
+            {/*  height="350" width="100%"*/}
+            {/*  src={"https://www.wcostream.com/"+this.state.episode_link}*/}
+            {/*/> : "No Video Loaded"}*/}
+
+           <center>
+             {this.state.episode_link ? <iframe
+               src={"https://www.wcostream.com/"+this.state.episode_link}
+               scrolling="no"
+               allowFullScreen="" rel="nofollow" data-ex-slot-check="iframe_ex_slot_1"
+               width="530" height="440" frameBorder="0"/>: "No Video Loaded"}
+           </center>
+
+
           </div>
         </div>
         <div className="col-md-5">

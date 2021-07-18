@@ -3,7 +3,7 @@ import axios from "axios";
 
 let cors_api_url = "http://localhost:8080/"
 
-async function doCORSRequest(options) {
+async function doCORSRequest(options, timeout = 0) {
   let request = null
   if(options.method === "POST"){
 
@@ -19,7 +19,11 @@ async function doCORSRequest(options) {
 
   }else{
     // GET REQUEST
-    request = await axios.get(`${cors_api_url}${options.url}`).then(
+    request = await axios.get(`${cors_api_url}${options.url}`,{
+      headers:{
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    }).then(
       (response)=> {
         return response
       }
@@ -30,3 +34,5 @@ async function doCORSRequest(options) {
 }
 
 export default doCORSRequest
+
+
