@@ -10,7 +10,8 @@ class Login extends React.Component {
     this.state={
       username:'',
       password:'',
-      status: ''
+      status: '',
+      loggedIn: false
     };
 
     this.handleChange=this.handleChange.bind(this);
@@ -23,8 +24,11 @@ class Login extends React.Component {
     this.setState(data)
   }
 
-
-
+  async componentDidMount(){
+    if(localStorage.getItem('credentials') && localStorage.getItem('token')){
+      await this.setState({loggedIn: true})
+    }
+  }
 
   onSubmit(e){
     e.preventDefault()
@@ -73,8 +77,8 @@ class Login extends React.Component {
                   </div>
 
                   <p className="lead">
-                    <button type="submit" className="btn mx-5 btn-warning btn-lg" role="button">Login</button>
-                    <button type="button" onClick={() => {window.location.href = "/register"}} className="btn mx-5 btn-primary btn-lg" role="button">Register</button>
+                    <button type="submit" className="btn mx-5 btn-warning" role="button">Login</button>
+                    <button type="button" onClick={() => {window.location.href = "/register"}} className="btn mx-5 btn-primary" role="button">Register</button>
                   </p>
                 </form>
               </div>
@@ -83,7 +87,7 @@ class Login extends React.Component {
         </div>
 
         {this.state.loggedIn && <Redirect to='/home'/>}
-        {localStorage.length > 0 &&  <Redirect to='/home'/>}
+        {/*{localStorage.getItem('credentials') &&  <Redirect to='/home'/>}*/}
       </div>
     );
   }

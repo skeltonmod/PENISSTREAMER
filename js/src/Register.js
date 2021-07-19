@@ -40,7 +40,6 @@ class Register extends React.Component {
         "number": formData.get('number'),
       }
 
-
       return await axios.post("http://127.0.0.1:8000/api/register", body, header).then((response) => {
         return response.data
       })

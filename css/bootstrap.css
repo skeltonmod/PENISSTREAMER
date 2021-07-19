@@ -42,7 +42,7 @@ $cyan:     #00aaaad0 !default;
 
 @font-face {
   font-family: 'DOS';
-  src: url("../fonts/Px437_IBM_EGA8.otf") format("opentype");
+  src: url("../fonts/ProggyClean.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   -webkit-font-kerning: none;
@@ -51,6 +51,7 @@ $cyan:     #00aaaad0 !default;
   -webkit-font-variant-ligatures: none;
   font-variant-ligatures: none;
   font-variant-numeric: tabular-nums;
+
 }
 
 *,
@@ -83,6 +84,7 @@ body {
   -webkit-font-kerning: none;
   font-kerning: none;
   text-rendering: geometricPrecision;
+
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {

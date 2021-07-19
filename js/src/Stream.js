@@ -55,16 +55,6 @@ class Stream extends React.Component{
     this.setState({renderedTitleList: this.state.titleList.slice(this.state.page_count, this.state.page_count + this.state.limit)})
   }
 
-  // async playEpisode(){
-  //   const request = await doCORSRequest({url:`http://localhost:8080/https://www.wcostream.com/inc/embed/getvidlink.php?v=Cartoons/SpongeBob.SquarePants.S13E01E02.1080p.AMZN.WEBRip.DDP2.0.x264-LAZY[rarbg]/SpongeBob.SquarePants.S13E01E02.A.Place.for.Pets.-.Lockdown.for.Love.1080p.AMZN.WEB-DL.DDP2.0.H.264-LAZY.mp4&embed=ndisk&hd=1`
-  //     , method: "GET"}).then((r)=>{return r.data})
-  //
-  //   console.log(request)
-  //
-  //   let $ = cheerio.load(request)
-  //
-  // }
-
   async parseEpisode(e){
     // crawl for episode
     let arrayBin = [];
@@ -115,19 +105,11 @@ class Stream extends React.Component{
       <div className="row">
         <div className="col">
           <div className="jumbotron my-6">
-            {/*{this.state.source ? <video width="100%" height="300" controls>*/}
-            {/*  <source src={this.state.source} type="video/mp4"/>*/}
-            {/*</video> : <center>{this.state.episode_link ? "Loading" : "No Video Loaded"}</center>}*/}
-            {/*{this.state.episode_link ? <iframe*/}
-            {/*  height="350" width="100%"*/}
-            {/*  src={"https://www.wcostream.com/"+this.state.episode_link}*/}
-            {/*/> : "No Video Loaded"}*/}
-
            <center>
              {this.state.episode_link ? <iframe
                src={"https://www.wcostream.com/"+this.state.episode_link}
                scrolling="no"
-               allowFullScreen="" rel="nofollow" data-ex-slot-check="iframe_ex_slot_1"
+               allowFullScreen="yes" rel="nofollow" data-ex-slot-check="iframe_ex_slot_1"
                width="530" height="440" frameBorder="0"/>: "No Video Loaded"}
            </center>
 
