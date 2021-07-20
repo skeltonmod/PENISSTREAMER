@@ -21,7 +21,7 @@
 - [x] Login
 - [x] Friends System
 - [ ] Premium Account Support (Stripe payment)
-- [ ] Edit Profile
+- [x] Edit Profile
 - [ ] News Feed
 
 
