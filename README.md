@@ -19,7 +19,7 @@
 - [x] Authentication
 - [x] Registration
 - [x] Login
-- [ ] Friends System
+- [x] Friends System
 - [ ] Premium Account Support (Stripe payment)
 - [ ] Edit Profile
 - [ ] News Feed
