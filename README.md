@@ -19,9 +19,9 @@
 - [x] Authentication
 - [x] Registration
 - [x] Login
-- [ ] Friends System
+- [x] Friends System
 - [ ] Premium Account Support (Stripe payment)
-- [ ] Edit Profile
+- [x] Edit Profile
 - [ ] News Feed
 
 
