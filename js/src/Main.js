@@ -9,6 +9,7 @@ import Stream from "./Stream";
 import Profile from "./Profile";
 import PageGuard from "./PageGuard";
 import Purchase from "./Purchase";
+import Friends from "./Friends";
 
 // Global States
 const Main = () => {
@@ -43,6 +44,9 @@ const Main = () => {
 
           <Route path='/purchase' exact>
             <PageGuard component={Purchase}/>
+          </Route>
+          <Route path='/friends' exact>
+            <PageGuard component={Friends}/>
           </Route>
 
         </Switch>

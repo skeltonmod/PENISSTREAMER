@@ -21,8 +21,6 @@ class Stream extends React.Component{
     this.nextPage = this.nextPage.bind(this)
   }
 
-
-
   async componentDidMount() {
     let temp_array = []
     await this.setState({limit: 7})

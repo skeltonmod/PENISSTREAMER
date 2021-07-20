@@ -247,7 +247,7 @@ class ViewProfile extends React.Component{
         <div className="card text-white bg-info mb-3 ">
           <div className="card-header"><center>{this.state.profileData.username} Feed</center></div>
           <div className="card-body align-content-center">
-
+              <h5>Developer Got Lazy!</h5>
           </div>
         </div>
 
@@ -341,7 +341,7 @@ const Profile = (props) =>{
                     </p>
                   </div>
                   <div className="form-group mb-5 col-6">
-                    <label className="col-form-label col-form-label-lg bg-warning"  htmlFor="inputLarge">Email</label>
+                    <label className="col-form-label col-form-label-lg bg-warning"  htmlFor="inp utLarge">Email</label>
                     <input className="form-control form-control-lg bg-warning" onBlur={formik.handleBlur} value={formik.values.email} onChange={formik.handleChange} name="email" type="email"/>
                     <p className="text-danger">
                       {formik.touched.email && formik.errors.email ?

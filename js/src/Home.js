@@ -50,7 +50,7 @@ class Home extends React.Component {
   async componentDidMount() {
     await this.setState({limit: 4})
 
-    this.fetchData()
+    await this.fetchData()
     console.log(this.state.renderedfeedList)
   }
 
