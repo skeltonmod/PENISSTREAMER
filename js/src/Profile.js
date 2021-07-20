@@ -8,72 +8,32 @@ import axios from "axios";
 class CheckFriendState extends React.Component{
   constructor(props) {
     super(props);
-    this.clickHandler = this.clickHandler.bind(this)
   }
 
-  clickHandler(e){
-    switch (e.target.name){
-      case "add":
-        const add = async () =>{
-          const header = {
-            headers:{
-              "Accept": "application/json"
-            }
-          }
-          const body = {
-            // You
-            first_user: JSON.parse(localStorage.getItem('credentials')).id,
-            // Your Supposed Friend
-            second_user: e.target.id,
-            // Who added who?
-            acted_user: JSON.parse(localStorage.getItem('credentials')).id,
-            status: "pending",
-            userid: JSON.parse(localStorage.getItem('credentials')).userid,
 
-          }
-          return await axios.post("http://127.0.0.1:8000/api/sendFriendRequest", body, header).then((response) => {
-            return response
-          })
-        }
-
-        add().then(
-          (r)=>{
-            // console.log(r.data[0].status)
-            // setFriendState(r.data[0].status)
-            console.log(r)
-          }
-        )
-        break;
-      case "accept":
-        alert("Decline")
-        break;
-
-    }
-
-    window.location.href = String(window.location.href)
-  }
 
   render() {
     switch (this.props.state){
-      case '':
-        return <button className="btn btn-success" id={this.props.id} name="add" onClick={this.clickHandler}>Add Friend</button>
+      case 'add':
+        return <button className="btn btn-success" id={this.props.id} name="add" onClick={this.props.handler}>Add Friend</button>
       case 'pending':
-        return <button className="btn btn-primary" id={this.props.id} disabled>Request Sent</button>
+        return <button className="btn btn-primary" id={this.props.id} onClick={this.props.handler} disabled>Request Sent</button>
 
       case 'confirmed':
         return <div>
-          <button className="btn btn-primary" id={this.props.id}>Friends</button>
-          <button className="btn btn-primary" id={this.props.id}>Send Message</button>
+          <button className="btn btn-success mr-3 disabled" id={this.props.id} onClick={this.props.handler}>Friends</button>
+          <button className="btn btn-primary mr-3" id={this.props.id} onClick={this.props.handler}>Send Message</button>
+          <button className="btn btn-danger" name="decline" id={this.props.id} onClick={this.props.handler}>Unfriend</button>
         </div>
 
       case 'acceptable':
         return <div>
-          <button className="btn btn-success mx-3" name="accept" id={this.props.id}>Accept Friend Request</button>
-          <button className="btn btn-danger" name="decline" id={this.props.id}>Deny Friend Request</button>
+          <button className="btn btn-success mr-3" name="accept" id={this.props.id} onClick={this.props.handler}>Accept Friend Request</button>
+          <button className="btn btn-danger" name="decline" id={this.props.id} onClick={this.props.handler}>Deny Friend Request</button>
         </div>
 
       default:
-        return <div><button className="btn btn-info" name="accept" id={this.props.id}>Loading...</button></div>
+        return <button className="btn btn-success" id={this.props.id} name="add" onClick={this.props.handler}>Loading...</button>
     }
   }
 }
@@ -94,60 +54,122 @@ class ViewProfile extends React.Component{
   }
 
   clickHandler(e){
-    alert(e.target.name)
+    // alert(e)
+    switch (e.target.name){
+      case "add":
+        const add = async () =>{
+          const header = {
+            headers:{
+              "Accept": "application/json"
+            }
+          }
+          const body = {
+            // You
+            acted_user: JSON.parse(localStorage.getItem('credentials')).id,
+            // Your Supposed Friend
+            second_user: e.target.id,
+
+          }
+          return await axios.post("http://127.0.0.1:8000/api/sendFriendRequest", body, header).then((response) => {
+            return response
+          })
+        }
+
+        add().then(
+          (r)=>{
+            this.setState({friendState: "pending"})
+          }
+        )
+        break;
+      case "accept":
+        const accept = async () =>{
+          const header = {
+            headers:{
+              "Accept": "application/json"
+            }
+          }
+          const body = {
+            // You
+            acted_user: e.target.id,
+            // Your Supposed Friend
+            second_user: JSON.parse(localStorage.getItem('credentials')).id,
+
+          }
+          return await axios.post("http://127.0.0.1:8000/api/acceptRequest", body, header).then((response) => {
+            return response
+          })
+        }
+
+        accept().then(
+          (r)=>{
+            this.setState({friendState: "confirmed"})
+          }
+        )
+        break;
+
+    }
   }
 
   async componentDidMount() {
     this._isMounted = true;
-    const getUserProfile = async () =>{
+    const getProfileData = async () =>{
       const header = {
         headers:{
           "Accept": "application/json"
         }
       }
       const body = {
-        "userid": String(window.location.href).split('/')[4],
+        "userid": String(window.location.href).split('/')[4]
       }
-      return await axios.post("http://127.0.0.1:8000/api/getUserFeed", body, header).then((response) => {
-        return response
+      return await axios.post('http://127.0.0.1:8000/api/getProfileData', body, header).then(function (r){
+        return r
       })
+
     }
+    await getProfileData().then(r => {
 
-    if(this._isMounted){
-      getUserProfile().then(r => {
-        console.log(r)
-        this.setState({profileData: r.data[0]}, function (){
-          const getFriendState = async () =>{
-            const header = {
-              headers:{
-                "Accept": "application/json"
-              }
+      this.setState({profileData: r.data[0]}, function (){
+        const getFriendRequestStatus = async () =>{
+          const header = {
+            headers:{
+              "Accept": "application/json"
             }
-            const body = {
-              "id": this.state.profileData.id,
-            }
-            return await axios.post("http://127.0.0.1:8000/api/getFriendState", body, header).then((response) => {
-              return response
-            })
           }
-          getFriendState().then(r => {
-
-            if(r.data[0][0] === undefined && r.data[1]){ // for the recipient
-              this.setState({friendState: "acceptable"})
-            }else{
-              this.setState({friendState: (r.data[0][0] !== undefined && r.data[0][0].status)}) // set status for sender
-            }
-
+          const body = {
+            // You
+            acted_user: JSON.parse(localStorage.getItem('credentials')).id,
+            // Your Supposed Friend
+            second_user: this.state.profileData.id,
+          }
+          return await axios.post('http://127.0.0.1:8000/api/getFriendRequestState', body, header).then(function (r){
+            return r
           })
+        }
+
+        getFriendRequestStatus().then(r =>{
+          console.log(r)
+          if(!r.data[2]){
+            if(r.data[0] && !r.data[1]){
+              this.setState({friendState: "acceptable"})
+            }else if (!r.data[0] && r.data[1]){
+              this.setState({friendState: "pending"})
+            }else{
+              this.setState({friendState: "add"})
+            }
+          }else{
+            this.setState({friendState: "confirmed"})
+          }
+
+
         })
       })
-    }
-
-    console.log(this.state.profileData)
+    })
   }
 
   async componentWillUnmount(){
     this._isMounted = false;
+
+
   }
 
 
@@ -161,7 +183,7 @@ class ViewProfile extends React.Component{
             <span className="text-warning">Username:</span> <b>{this.state.profileData.username}</b><br/><br/>
             <span className="text-warning">Account Created:</span><b>{String(new Date(this.state.profileData.created_at))}</b>
             <br/><br/>
-            <CheckFriendState id={this.state.profileData.id} state={this.state.friendState}/>
+            <CheckFriendState id={this.state.profileData.id} state={this.state.friendState} handler={this.clickHandler}/>
           </div>
 
         </div>
