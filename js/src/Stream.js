@@ -3,7 +3,6 @@ import 'regenerator-runtime/runtime';
 import cheerio from 'cheerio'
 import doCORSRequest from "../CORS_POST";
 import ReactPaginate from 'react-paginate';
-import ItemCard from "./Components/ItemCard";
 
 class Stream extends React.Component{
   constructor(props) {
@@ -42,6 +41,7 @@ class Stream extends React.Component{
       temp_array.push({title: String(link.attribs.title).split('Watch ')[1], link: String(link.attribs.href).split("/")[3]})
 
     })
+
     await this.setState({titleList: temp_array, ep_count: Math.ceil(temp_array.length / this.state.limit), renderedTitleList: temp_array.slice(0, 7)})
 
   }

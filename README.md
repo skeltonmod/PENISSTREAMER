@@ -22,7 +22,7 @@
 - [x] Friends System
 - [x] Premium Account Support (Stripe payment)
 - [x] Edit Profile
-- [ ] News Feed
+- [x] News Feed
 
 
 

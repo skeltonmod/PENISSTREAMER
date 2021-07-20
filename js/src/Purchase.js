@@ -4,6 +4,7 @@ import valid from "card-validator";
 import {useFormik} from "formik";
 import axios from "axios";
 import {useHistory} from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 
 
 

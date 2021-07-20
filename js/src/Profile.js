@@ -381,7 +381,6 @@ const Profile = (props) =>{
               </form>
             </div>
           </div>
-
         </div>
         <div className="col-md-6">
           <div className="card text-white bg-warning mb-3">
