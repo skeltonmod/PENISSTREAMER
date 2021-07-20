@@ -10,7 +10,7 @@
     "start": "npm run build && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cors": "node js/nodejs/CORS.js",
-    "dev": "parcel index.html --open"
+    "dev": "parcel index.html"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -22,6 +22,7 @@
     "@cliqz/adblocker": "^1.22.2",
     "@cliqz/adblocker-webextension": "^1.22.2",
     "axios": "^0.21.1",
+    "card-validator": "^8.1.1",
     "cheerio": "^1.0.0-rc.10",
     "cors-anywhere": "^0.4.4",
     "fetch": "^1.1.0",

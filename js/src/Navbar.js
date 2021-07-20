@@ -2,9 +2,7 @@ import React from "react";
 
 const Navbar = () => {
   const [navbarName, setnavbarName] = React.useState("");
-  const [canonical, setCanonical] = React.useState("");
   const [profileLink, setprofileLink] = React.useState("");
-  const [auth, setAuth] = React.useState(false);
 
   function onLogout(){
     localStorage.clear();
@@ -23,11 +21,9 @@ const Navbar = () => {
 
   })
 
-  // <a className="navbar-brand" href={"/profile/"+JSON.parse(localStorage.getItem('credentials')).userid}>{JSON.parse(localStorage.getItem('credentials')).userid}</a>
-
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+      <nav className={JSON.parse(localStorage.getItem('credentials')).type === "Premium" ? "navbar navbar-expand-lg navbar-dark bg-warning" : "navbar navbar-expand-lg navbar-dark bg-primary"}>
         <a className="navbar-brand" href={"/profile/"+profileLink}>{navbarName}</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
                 aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">

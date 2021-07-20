@@ -2,6 +2,7 @@ import React from 'react';
 import {useFormik} from "formik";
 import * as yup from 'yup';
 import axios from "axios";
+import {useHistory} from "react-router-dom";
 
 
 
@@ -23,7 +24,7 @@ class CheckFriendState extends React.Component{
         return <div>
           <button className="btn btn-success mr-3 disabled" id={this.props.id} onClick={this.props.handler}>Friends</button>
           <button className="btn btn-primary mr-3" id={this.props.id} onClick={this.props.handler}>Send Message</button>
-          <button className="btn btn-danger" name="decline" id={this.props.id} onClick={this.props.handler}>Unfriend</button>
+          <button className="btn btn-danger" name="unfriend" id={this.props.id} onClick={this.props.handler}>Unfriend</button>
         </div>
 
       case 'acceptable':
@@ -106,30 +107,8 @@ class ViewProfile extends React.Component{
           }
         )
         break;
-
-    }
-  }
-
-  async componentDidMount() {
-    this._isMounted = true;
-    const getProfileData = async () =>{
-      const header = {
-        headers:{
-          "Accept": "application/json"
-        }
-      }
-      const body = {
-        "userid": String(window.location.href).split('/')[4]
-      }
-      return await axios.post('http://127.0.0.1:8000/api/getProfileData', body, header).then(function (r){
-        return r
-      })
-
-    }
-    await getProfileData().then(r => {
-
-      this.setState({profileData: r.data[0]}, function (){
-        const getFriendRequestStatus = async () =>{
+      case "unfriend":
+        const unfriend = async () =>{
           const header = {
             headers:{
               "Accept": "application/json"
@@ -137,33 +116,107 @@ class ViewProfile extends React.Component{
           }
           const body = {
             // You
-            acted_user: JSON.parse(localStorage.getItem('credentials')).id,
+            acted_user: e.target.id,
             // Your Supposed Friend
-            second_user: this.state.profileData.id,
+            second_user: JSON.parse(localStorage.getItem('credentials')).id,
+
           }
-          return await axios.post('http://127.0.0.1:8000/api/getFriendRequestState', body, header).then(function (r){
-            return r
+          return await axios.post("http://127.0.0.1:8000/api/unfriendUser", body, header).then((response) => {
+            return response
           })
         }
 
-        getFriendRequestStatus().then(r =>{
-          console.log(r)
-          if(!r.data[2]){
-            if(r.data[0] && !r.data[1]){
-              this.setState({friendState: "acceptable"})
-            }else if (!r.data[0] && r.data[1]){
-              this.setState({friendState: "pending"})
-            }else{
-              this.setState({friendState: "add"})
+        unfriend().then(
+          (r)=>{
+            this.setState({friendState: "add"})
+          }
+        )
+        break;
+      case "decline":
+        const decline = async () =>{
+          const header = {
+            headers:{
+              "Accept": "application/json"
             }
-          }else{
-            this.setState({friendState: "confirmed"})
+          }
+          const body = {
+            // You
+            acted_user: e.target.id,
+            // Your Supposed Friend
+            second_user: JSON.parse(localStorage.getItem('credentials')).id,
+
+          }
+          return await axios.post("http://127.0.0.1:8000/api/unfriendUser", body, header).then((response) => {
+            return response
+          })
+        }
+
+        decline().then(
+          (r)=>{
+            this.setState({friendState: "add"})
+          }
+        )
+        break;
+
+    }
+  }
+
+  async componentDidMount() {
+    this._isMounted = true;
+    if(this._isMounted){
+      const getProfileData = async () =>{
+        const header = {
+          headers:{
+            "Accept": "application/json"
+          }
+        }
+        const body = {
+          "userid": String(window.location.href).split('/')[4]
+        }
+        return await axios.post('http://127.0.0.1:8000/api/getProfileData', body, header).then(function (r){
+          return r
+        })
+
+      }
+      await getProfileData().then(r => {
+
+        this.setState({profileData: r.data[0]}, function (){
+          const getFriendRequestStatus = async () =>{
+            const header = {
+              headers:{
+                "Accept": "application/json"
+              }
+            }
+            const body = {
+              // You
+              acted_user: JSON.parse(localStorage.getItem('credentials')).id,
+              // Your Supposed Friend
+              second_user: this.state.profileData.id,
+            }
+            return await axios.post('http://127.0.0.1:8000/api/getFriendRequestState', body, header).then(function (r){
+              return r
+            })
           }
 
+          getFriendRequestStatus().then(r =>{
+            console.log(r)
+            if(!r.data[2]){
+              if(r.data[0] && !r.data[1]){
+                this.setState({friendState: "acceptable"})
+              }else if (!r.data[0] && r.data[1]){
+                this.setState({friendState: "pending"})
+              }else{
+                this.setState({friendState: "add"})
+              }
+            }else{
+              this.setState({friendState: "confirmed"})
+            }
 
+
+          })
         })
       })
-    })
+    }
   }
 
   async componentWillUnmount(){
@@ -204,6 +257,7 @@ class ViewProfile extends React.Component{
 }
 
 const Profile = (props) =>{
+  const history = useHistory();
   const validationSchema = yup.object({
     username: yup.string().required('Username required'),
     email: yup.string().email("Please enter a valid email address"),
@@ -333,8 +387,18 @@ const Profile = (props) =>{
           <div className="card text-white bg-warning mb-3">
             <div className="card-header">Account Options</div>
             <div className="card-body align-content-center">
-              <button className="btn btn-info" type="button">Purchase Premium</button>
-              <p className="text-white my-2">By Purchasing a premium pass, you will be supporting this project</p>
+              {JSON.parse(localStorage.getItem('credentials')).type === "Premium"
+                ? <button className="btn btn-success" type="button">Premium User!</button>:
+                <button className="btn btn-info" type="button" onClick={()=>{history.push('/purchase')}}>Purchase Premium</button>
+              }
+              {JSON.parse(localStorage.getItem('credentials')).type === "Premium"
+                ?  <p className="text-white my-2">Congrats! You just wasted $10
+                </p>:
+                <p className="text-white my-2">By Purchasing a premium pass, you will be supporting this project
+
+                </p>
+              }
+
               <button className="btn btn-danger" type="button">Delete Account</button>
               <p className="text-white my-2">You'll be asked only once</p>
             </div>

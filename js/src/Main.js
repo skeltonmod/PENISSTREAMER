@@ -8,7 +8,7 @@ import Watch from "./Watch";
 import Stream from "./Stream";
 import Profile from "./Profile";
 import PageGuard from "./PageGuard";
-import Navbar from "./Navbar";
+import Purchase from "./Purchase";
 
 // Global States
 const Main = () => {
@@ -39,6 +39,10 @@ const Main = () => {
 
           <Route path='/profile/:userid' exact>
             <PageGuard component={Profile}/>
+          </Route>
+
+          <Route path='/purchase' exact>
+            <PageGuard component={Purchase}/>
           </Route>
 
         </Switch>
